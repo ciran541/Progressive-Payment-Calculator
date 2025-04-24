@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const oneMonthSORA = 2.3107; // Placeholder: Update with actual 1M SORA rate
     const threeMonthSORA = 2.4407; // Placeholder: Update with actual 3M SORA rate
     const spread = 0.28; // Middle of the spread range 0.28%-0.35%
-    const spreadRange = "0.25%-0.35%"; // Spread range for display
+    const spreadRange = "0.28%-0.35%"; // Spread range for display
 
     // Set default interest rate
     const defaultInterest = (threeMonthSORA + spread).toFixed(2);
