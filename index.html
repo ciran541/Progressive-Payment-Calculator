@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <title>Progressive Payment Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="calculator">
+      <div class="calculator-content">
+        <div class="inputs-section">
+          <h2 class="section-title">Input Details</h2>
+          
+          <div class="input-group">
+            <label class="input-label">Purchase Price</label>
+            <div class="input-container">
+              <div class="input-icon">SGD</div>
+              <input type="number" id="purchasePrice" placeholder="E.g., 1000000">
+            </div>
+          </div>
+          
+          <div class="input-group">
+            <label class="input-label">Usable CPF (OA)</label>
+            <div class="input-container">
+              <div class="input-icon">SGD</div>
+              <input type="number" id="cpfAmount" placeholder="E.g., 300000">
+            </div>
+          </div>
+          
+          <div class="input-group">
+            <label class="input-label">Required Loan</label>
+            <div class="input-container">
+              <div class="input-icon">SGD</div>
+              <input type="number" id="loanAmount" placeholder="E.g., 500000">
+            </div>
+          </div>
+          
+          <div class="input-group">
+            <label class="input-label">Tenure</label>
+            <div class="input-container">
+              <div class="input-icon">YEARS</div>
+              <input type="number" id="tenure" placeholder="E.g., 25">
+            </div>
+            <div class="input-note">Note: If tenure exceeds age 65, loan cannot exceed 55% of purchase price</div>
+          </div>
+          
+          <div class="input-group">
+            <label class="input-label">Interest P.A</label>
+            <div class="input-container">
+              <div class="input-icon">%</div>
+              <input type="number" step="0.01" id="interest" placeholder="E.g., 3.5">
+            </div>
+            <div class="input-note" id="interestNote"></div>
+          </div>
+          
+          <div class="error-message" id="error"></div>
+          
+          <div class="button-container">
+            <button class="calculate-button" onclick="calculate()">Calculate Payment Plan</button>
+          </div>
+        </div>
+        
+        <div class="results-section" id="results">
+          <h2 class="section-title">Payment Schedule</h2>
+          <div class="initial-message">
+            <div class="initial-message-icon">
+              <img src="https://theloanconnection.com.sg/wp-content/uploads/2025/04/stamp_duty_icon.png" alt="Calculator Icon">
+            </div>
+            <div class="initial-message-content">
+              <div class="initial-message-title">Calculate Your Payment Schedule</div>
+              <div class="initial-message-description">Provide your property details to receive an instant estimate of your progressive payment schedule.</div>
+            </div>
+          </div>
+          <!-- Dynamic Results Will Be Injected Here -->
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>
