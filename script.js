@@ -80,6 +80,12 @@ function validateInterest(value) {
     if (!value || isNaN(value)) {
         return "Please enter a valid interest rate";
     }
+    if (value < 0.1) {
+        return "Interest rate must be at least 0.1%";
+    }
+    if (value > 10) {
+        return "Interest rate cannot exceed 10%";
+    }
     return null;
 }
 
@@ -95,8 +101,8 @@ function validateCPF(value, purchasePrice, loanAmount) {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Define SORA rates and spread
-    const oneMonthSORA = 2.3107; // Placeholder: Update with actual 1M SORA rate
-    const threeMonthSORA = 2.4407; // Placeholder: Update with actual 3M SORA rate
+    // const oneMonthSORA = 2.3107; // Placeholder: Update with actual 1M SORA rate
+    const threeMonthSORA = 2.3991; // Placeholder: Update with actual 3M SORA rate
     const spread = 0.28; // Middle of the spread range 0.28%-0.35%
     const spreadRange = "0.28%-0.35%"; // Spread range for display
 
@@ -107,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Dynamically set the interest note
     const interestNote = document.getElementById('interestNote');
-    interestNote.textContent = `Current 1M SORA: ${oneMonthSORA.toFixed(2)}%, Current 3M SORA: ${threeMonthSORA.toFixed(2)}%, Spread range: ${spreadRange}`;
+    interestNote.textContent = `Current 3M SORA: ${threeMonthSORA.toFixed(2)}%, Spread range: ${spreadRange}`;
 
     // Purchase Price validation
     const purchasePriceInput = document.getElementById('purchasePrice');
