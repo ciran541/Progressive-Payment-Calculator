@@ -1,6 +1,6 @@
 function formatMoney(amount) {
-    return "$" + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-}
+    return "$" + Math.round(amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 
 function calculateEMI(P, r, n) {
     r = r / 12 / 100;
@@ -102,7 +102,7 @@ function validateCPF(value, purchasePrice, loanAmount) {
 document.addEventListener('DOMContentLoaded', function() {
     // Define SORA rates and spread
     // const oneMonthSORA = 2.3107; // Placeholder: Update with actual 1M SORA rate
-    const threeMonthSORA = 2.3991; // Placeholder: Update with actual 3M SORA rate
+    const threeMonthSORA = 2.3885; // Placeholder: Update with actual 3M SORA rate
     const spread = 0.28; // Middle of the spread range 0.28%-0.35%
     const spreadRange = "0.28%-0.35%"; // Spread range for display
 
@@ -403,3 +403,48 @@ function calculate() {
         results.insertBefore(errorAlert, results.firstChild.nextSibling);
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to send height to parent window with extra padding
+    function sendHeight() {
+        // Get the document height and add some extra padding (20px)
+        const height = document.body.scrollHeight + 20;
+        
+        window.parent.postMessage({
+            type: 'setHeight',
+            height: height
+        }, '*');
+    }
+
+    // Send height on important events
+    const events = ['load', 'resize', 'input', 'change'];
+    events.forEach(event => {
+        window.addEventListener(event, sendHeight);
+    });
+    
+    // Watch for DOM changes
+    const observer = new MutationObserver(function() {
+        // Small delay to ensure all DOM changes are completed
+        setTimeout(sendHeight, 50);
+    });
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        characterData: true
+    });
+    
+    // Handle height requests from parent
+    window.addEventListener('message', function(event) {
+        if (event.data.type === 'requestHeight') {
+            sendHeight();
+        }
+    });
+    
+    // Initial height send with slight delay to ensure full rendering
+    setTimeout(sendHeight, 300);
+    // Also send after all images and assets are loaded
+    window.addEventListener('load', function() {
+        setTimeout(sendHeight, 500);
+    });
+});
