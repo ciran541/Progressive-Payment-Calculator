@@ -813,8 +813,8 @@ input::placeholder {
   /* For devices with notches (iPhone X and newer) */
   @supports (padding-top: env(safe-area-inset-top)) {
     .container {
-      padding-left: max(20px, env(safe-area-inset-left));
-      padding-right: max(20px, env(safe-area-inset-right));
+      padding-left: max(10px, env(safe-area-inset-left));
+      padding-right: max(10px, env(safe-area-inset-right));
       padding-bottom: max(20px, env(safe-area-inset-bottom));
     }
   }

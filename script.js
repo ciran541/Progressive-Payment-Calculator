@@ -1,6 +1,21 @@
+// Format number with commas for input fields
+function formatNumberWithCommas(value) {
+    value = value.replace(/[^0-9.]/g, '');
+    const parts = value.split('.');
+    let integerPart = parts[0];
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return integerPart;
+}
+
+// Parse number by removing commas
+function parseNumber(value) {
+    if (!value) return NaN;
+    return parseFloat(value.replace(/,/g, ''));
+}
+
 function formatMoney(amount) {
-    return "$" + Math.round(amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
+    return "$ " + Math.round(amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 function calculateEMI(P, r, n) {
     r = r / 12 / 100;
@@ -101,8 +116,7 @@ function validateCPF(value, purchasePrice, loanAmount) {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Define SORA rates and spread
-    // const oneMonthSORA = 2.3107; // Placeholder: Update with actual 1M SORA rate
-    const threeMonthSORA = 2.3885; // Placeholder: Update with actual 3M SORA rate
+    const threeMonthSORA = 2.3349; // Placeholder: Update with actual 3M SORA rate
     const spread = 0.28; // Middle of the spread range 0.28%-0.35%
     const spreadRange = "0.28%-0.35%"; // Spread range for display
 
@@ -115,14 +129,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const interestNote = document.getElementById('interestNote');
     interestNote.textContent = `Current 3M SORA: ${threeMonthSORA.toFixed(2)}%, Spread range: ${spreadRange}`;
 
-    // Purchase Price validation
+    // Get input elements
     const purchasePriceInput = document.getElementById('purchasePrice');
+    const loanAmountInput = document.getElementById('loanAmount');
+    const cpfAmountInput = document.getElementById('cpfAmount');
+    const tenureInput = document.getElementById('tenure');
+
+    // Add event listeners for comma formatting
+    [purchasePriceInput, loanAmountInput, cpfAmountInput].forEach(input => {
+        input.addEventListener('input', function(e) {
+            const cursorPosition = e.target.selectionStart;
+            const valueBefore = e.target.value;
+            const formattedValue = formatNumberWithCommas(e.target.value);
+            e.target.value = formattedValue;
+            
+            const commasBeforeCursor = (valueBefore.slice(0, cursorPosition).match(/,/g) || []).length;
+            const newCommasBeforeCursor = (formattedValue.slice(0, cursorPosition).match(/,/g) || []).length;
+            const cursorAdjustment = newCommasBeforeCursor - commasBeforeCursor;
+            e.target.setSelectionRange(cursorPosition + cursorAdjustment, cursorPosition + cursorAdjustment);
+            
+            validateFieldsOnChange();
+        });
+    });
+
+    // Purchase Price validation
     const purchasePriceError = document.createElement('div');
     purchasePriceError.className = 'field-error';
     purchasePriceInput.parentNode.insertAdjacentElement('afterend', purchasePriceError);
     
     purchasePriceInput.addEventListener('input', function() {
-        const value = parseFloat(this.value);
+        const value = parseNumber(this.value);
         const error = validatePurchasePrice(value);
         if (error) {
             purchasePriceError.textContent = error;
@@ -135,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Loan Amount validation
-    const loanAmountInput = document.getElementById('loanAmount');
     const loanAmountError = document.createElement('div');
     loanAmountError.className = 'field-error';
     loanAmountInput.parentNode.insertAdjacentElement('afterend', loanAmountError);
@@ -145,7 +180,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Tenure validation
-    const tenureInput = document.getElementById('tenure');
     const tenureError = document.createElement('div');
     tenureError.className = 'field-error';
     tenureInput.parentNode.insertAdjacentElement('afterend', tenureError);
@@ -178,7 +212,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // CPF Amount validation
-    const cpfAmountInput = document.getElementById('cpfAmount');
     const cpfAmountError = document.createElement('div');
     cpfAmountError.className = 'field-error';
     cpfAmountInput.parentNode.insertAdjacentElement('afterend', cpfAmountError);
@@ -188,9 +221,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     function validateFieldsOnChange() {
-        const purchasePrice = parseFloat(purchasePriceInput.value);
-        const loanAmount = parseFloat(loanAmountInput.value);
-        const cpfAmount = parseFloat(cpfAmountInput.value) || 0;
+        const purchasePrice = parseNumber(purchasePriceInput.value);
+        const loanAmount = parseNumber(loanAmountInput.value);
+        const cpfAmount = parseNumber(cpfAmountInput.value) || 0;
         
         const loanError = validateLoanAmount(loanAmount, purchasePrice);
         if (loanError) {
@@ -211,9 +244,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function calculate() {
-    const purchasePrice = parseFloat(document.getElementById("purchasePrice").value);
-    const cpf = parseFloat(document.getElementById("cpfAmount").value) || 0;
-    const loan = parseFloat(document.getElementById("loanAmount").value);
+    const purchasePrice = parseNumber(document.getElementById("purchasePrice").value);
+    const cpf = parseNumber(document.getElementById("cpfAmount").value) || 0;
+    const loan = parseNumber(document.getElementById("loanAmount").value);
     const tenure = parseInt(document.getElementById("tenure").value);
     const interest = parseFloat(document.getElementById("interest").value);
     const errorBox = document.getElementById("error");
@@ -232,7 +265,7 @@ function calculate() {
     }
     
     errorBox.style.display = "none";
-    results.innerHTML = "<h2 class='section-title'>Payment Schedule</h2>";
+    results.innerHTML = "";
     
     const cash = purchasePrice - cpf - loan;
     
